@@ -1,0 +1,11 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/slnx.sqlite
+/.vs/TiendaFakeStore.slnx/FileContentIndex/9fc962fc-2d96-49c3-b534-7571fefacb40.vsidx
+/.vs/TiendaFakeStore.slnx/FileContentIndex/b0612030-05a5-4fc3-8512-a8a7b38d80cf.vsidx
+/.vs/TiendaFakeStore.slnx/FileContentIndex/83be3780-0ec5-4e22-b355-510659206341.vsidx
+/.vs/slnx.sqlite-journal
+/.vs/TiendaFakeStore.slnx/FileContentIndex/1ea7112c-555b-448e-a456-3d54b3e657f2.vsidx
+*.vsidx
