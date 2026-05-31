@@ -175,7 +175,7 @@
         <!-- Cuadrícula de productos, que se adapta a diferentes tamaños de pantalla gracias a las clases de Bootstrap.-->
         <!-- Cada producto se muestra en una tarjeta con su imagen, título truncado para evitar desbordamientos, precio destacado y botones para ver detalles o añadir al carrito.-->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            <div class="col" ng-repeat="prod in productos | filter:searchText | filter:(selectedCategory ? {category: selectedCategory} : {})">
+            <div class="col" ng-repeat="prod in productos | filter:searchFilter | filter:(selectedCategory ? {category: selectedCategory} : {}):true">
                 <div class="card h-100 shadow-sm border-secondary">
                     <div class="card-img-container">
                         <img ng-src="{{prod.image}}" class="card-img-top" alt="{{prod.title}}">
