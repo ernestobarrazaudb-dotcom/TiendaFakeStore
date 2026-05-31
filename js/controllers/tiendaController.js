@@ -8,6 +8,24 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
     $scope.searchText = '';
     $scope.selectedCategory = '';
 
+    // Contador derivado para mostrar en la UI y forzar recalculo cuando cambie el carrito
+    $scope.totalProductosCount = 0;
+    var recalcularContador = function() {
+        var total = 0;
+        $scope.carrito.forEach(function(item) {
+            total += Number(item.cantidad) || 0;
+        });
+        $scope.totalProductosCount = total;
+    };
+
+    // Calcular inicialmente
+    recalcularContador();
+
+    // Vigilar cambios en el carrito para actualizar el contador y total neto
+    $scope.$watchCollection('carrito', function(newVal, oldVal) {
+        recalcularContador();
+    });
+
     // Filtro de búsqueda personalizado: busca únicamente en el título (case-insensitive)
     $scope.searchFilter = function(prod) {
         if (!$scope.searchText || $scope.searchText.trim() === '') return true;
@@ -32,6 +50,20 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
 
     // Producto seleccionado para mostrar en el modal de detalles
     $scope.productoSeleccionado = null;
+
+    // Utility: if an element inside `el` has focus, blur it to avoid aria-hidden errors
+    function blurIfFocused(el) {
+        try {
+            var active = document.activeElement;
+            if (active && el && el.contains(active)) {
+                // Intentar mover el foco fuera antes de ocultar el elemento
+                active.blur();
+            }
+        } catch (e) {
+            // Silenciar errores de plataforma
+            console.warn('blurIfFocused failed', e);
+        }
+    }
 
     // Abre el modal y carga la información del producto seleccionado
     $scope.verDetalles = function(producto) {
@@ -65,6 +97,7 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
 
         // Cerrar el modal de detalles si está abierto
         if (modal) {
+            blurIfFocused(modalElemento);
             modal.hide();
         }
 
@@ -136,7 +169,11 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
                     $scope.guardarEnLocalStorage();
                 });
                 // Notificación de eliminación exitosa
-                Swal.fire({
+                    // Cerrar modal si el foco estaba en un elemento dentro
+                    var modalEl = document.getElementById('modalCarrito');
+                    blurIfFocused(modalEl);
+
+                    Swal.fire({
                     toast: true,
                     position: 'top-end',
                     icon: 'success',
@@ -169,8 +206,9 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
                     localStorage.removeItem('carrito_tienda');
                 });
 
-                // Cerrar el modal de carrito si está abierto
+                // Cerrar el modal de carrito si está abierto (evitar aria-hidden focus issue)
                 const modalElement = document.getElementById('modalCarrito');
+                blurIfFocused(modalElement);
                 const modal = bootstrap.Modal.getInstance(modalElement);
                 if (modal) modal.hide();
 
