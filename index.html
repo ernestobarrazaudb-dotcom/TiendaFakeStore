@@ -23,28 +23,27 @@
             </a>
             <!-- El botón del carrito de compras se encuentra en el extremo derecho de la barra de navegación, con un icono de carrito y una insignia que muestra el número de productos añadidos al carrito. La insignia solo se muestra cuando hay productos en el carrito, utilizando la directiva "ng-show" para controlar su visibilidad. El botón tiene un título que indica su función para mejorar la accesibilidad.-->
             <div class="ms-auto">
-                <button type="button" class="btn position-relative px-2 py-2" title="Ver carrito"
+                <button type="button" class="btn position-relative px-2 py-2 d-flex align-items-center gap-2" title="Ver carrito"
                         data-bs-toggle="modal" data-bs-target="#modalCarrito">
-                    <i class="bi bi-cart-plus-fill fs-4 text-white"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" ng-show="carrito.length > 0">
-                        {{ carrito.length }}
-                        <span class="visually-hidden">productos añadidos</span>
+
+                    <!-- Contenedor del icono con badge superior (parte superior del carrito) -->
+                    <span class="position-relative d-inline-block">
+                        <i class="bi bi-cart-plus-fill fs-4 text-white"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" ng-show="carrito.length > 0" style="font-size:0.75rem;padding:.25rem .45rem;">
+                            {{ carrito.length }}
+                            <span class="visually-hidden">productos añadidos</span>
+                        </span>
                     </span>
+
+                    <!-- Monto total a la derecha del carrito -->
+                    <span class="ms-2 badge bg-success" ng-show="carrito.length > 0">$ {{ obtenerTotalNeto() }} </span>
                 </button>
             </div>
         </div>
     </nav>
 
     <!-- Modal del carrito de compras, que se muestra cuando el usuario hace clic en el botón del carrito en la barra de navegación. El modal presenta una tabla con los productos añadidos al carrito, mostrando su nombre, precio unitario, cantidad y subtotal. También incluye un botón para eliminar productos del carrito y un resumen del total neto de la compra. El modal tiene opciones para continuar comprando o proceder al pago.-->
-    <div class="position-absolute top-0 end-0 p-3">
-        <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalCarrito">
-                <span class="d-flex align-items-center">
-                🛒 Carrito
-                <span class="badge bg-danger ms-2" ng-show="totalProductosCount > 0">{{ totalProductosCount }}</span>
-            </span>
-            <span class="badge bg-success">{{ obtenerTotalNeto() }} USD</span>
-        </button>
-    </div>
+    <!-- Badge y total mostrados en el botón del navbar (bloque duplicado eliminado) -->
     <!-- Modal del carrito de compras, que se muestra cuando el usuario hace clic en el botón del carrito en la barra de navegación. El modal presenta una tabla con los productos añadidos al carrito, mostrando su nombre, precio unitario, cantidad y subtotal. También incluye un botón para eliminar productos del carrito y un resumen del total neto de la compra. El modal tiene opciones para continuar comprando o proceder al pago.-->
     <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel">
         <div class="modal-dialog modal-lg">
