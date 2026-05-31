@@ -186,7 +186,7 @@
                         <div class="mt-auto">
                             <h4 class="text-success mb-3 fw-bold">${{prod.price | number:2}}</h4>
                             <div class="d-flex gap-2">
-                                <button class="btn btn-outline-info w-100">Ver Detalles</button>
+                                <button type="button" class="btn btn-outline-info w-100" ng-click="verDetalles(prod)">Ver Detalles</button>
                                 <button class="btn btn-success" ng-click="agregarAlCarrito(prod)" title="Añadir al carrito">
                                     <i class="bi bi-cart-plus-fill"></i>
                                 </button>
