@@ -37,8 +37,12 @@
 
     <!-- Modal del carrito de compras, que se muestra cuando el usuario hace clic en el botón del carrito en la barra de navegación. El modal presenta una tabla con los productos añadidos al carrito, mostrando su nombre, precio unitario, cantidad y subtotal. También incluye un botón para eliminar productos del carrito y un resumen del total neto de la compra. El modal tiene opciones para continuar comprando o proceder al pago.-->
     <div class="position-absolute top-0 end-0 p-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCarrito">
-            🛒 Carrito <span class="badge bg-danger">{{ obtenerTotalNeto() }} USD</span>
+        <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalCarrito">
+                <span class="d-flex align-items-center">
+                🛒 Carrito
+                <span class="badge bg-danger ms-2" ng-show="totalProductosCount > 0">{{ totalProductosCount }}</span>
+            </span>
+            <span class="badge bg-danger">{{ obtenerTotalNeto() }} USD</span>
         </button>
     </div>
     <!-- Modal del carrito de compras, que se muestra cuando el usuario hace clic en el botón del carrito en la barra de navegación. El modal presenta una tabla con los productos añadidos al carrito, mostrando su nombre, precio unitario, cantidad y subtotal. También incluye un botón para eliminar productos del carrito y un resumen del total neto de la compra. El modal tiene opciones para continuar comprando o proceder al pago.-->
