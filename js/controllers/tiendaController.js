@@ -8,13 +8,12 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
     $scope.searchText = '';
     $scope.selectedCategory = '';
 
-    // Filtro de búsqueda personalizado: busca en título y descripción (case-insensitive)
+    // Filtro de búsqueda personalizado: busca únicamente en el título (case-insensitive)
     $scope.searchFilter = function(prod) {
         if (!$scope.searchText || $scope.searchText.trim() === '') return true;
         var q = $scope.searchText.toLowerCase();
         var title = (prod.title || '').toString().toLowerCase();
-        var desc = (prod.description || '').toString().toLowerCase();
-        return title.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
+        return title.indexOf(q) !== -1;
     };
 
     // Función para filtrar productos por categoría
