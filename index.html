@@ -8,6 +8,7 @@
     <!--Incorporación de Bootstrap 5.3.2 desde CDN para estilos y componentes, además de Bootstrap Icons para iconografía. También se enlaza el archivo CSS personalizado para estilos adicionales.-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/styles.css">
 
 </head>
@@ -20,9 +21,10 @@
             <a class="navbar-brand fw-bold text-white fs-3" href="#">
                 <i class="bi bi-bag-fill   me-2"></i>Tienda FakeStore
             </a>
-
+            <!-- El botón del carrito de compras se encuentra en el extremo derecho de la barra de navegación, con un icono de carrito y una insignia que muestra el número de productos añadidos al carrito. La insignia solo se muestra cuando hay productos en el carrito, utilizando la directiva "ng-show" para controlar su visibilidad. El botón tiene un título que indica su función para mejorar la accesibilidad.-->
             <div class="ms-auto">
-                <button class="btn position-relative px-2 py-2" title="Ver carrito">
+                <button type="button" class="btn position-relative px-2 py-2" title="Ver carrito"
+                        data-bs-toggle="modal" data-bs-target="#modalCarrito">
                     <i class="bi bi-cart-plus-fill fs-4 text-white"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" ng-show="carrito.length > 0">
                         {{ carrito.length }}
@@ -32,6 +34,69 @@
             </div>
         </div>
     </nav>
+
+    <!-- Modal del carrito de compras, que se muestra cuando el usuario hace clic en el botón del carrito en la barra de navegación. El modal presenta una tabla con los productos añadidos al carrito, mostrando su nombre, precio unitario, cantidad y subtotal. También incluye un botón para eliminar productos del carrito y un resumen del total neto de la compra. El modal tiene opciones para continuar comprando o proceder al pago.-->
+    <div class="position-absolute top-0 end-0 p-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCarrito">
+            🛒 Carrito <span class="badge bg-danger">{{ obtenerTotalNeto() }} USD</span>
+        </button>
+    </div>
+
+    <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCarritoLabel">Tu Carrito de Compras</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="alert alert-warning" ng-if="carrito.length === 0">
+                        Tu carrito está vacío. ¡Agrega algunos productos!
+                    </div>
+
+                    <table class="table table-striped align-middle" ng-if="carrito.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio Unitario</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in carrito">
+                                <td>{{ item.title }}</td>
+                                <td>${{ item.price.toFixed(2) }}</td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm text-center"
+                                           ng-model="item.cantidad" ng-change="guardarEnLocalStorage()" min="1" style="width: 70px;">
+                                </td>
+                                <td>${{ (item.price * item.cantidad).toFixed(2) }}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" ng-click="eliminarProducto($index)">
+                                        🗑️ Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-end mt-3" ng-if="carrito.length > 0">
+                        <h3>Total Neto: <span class="text-success">${{ obtenerTotalNeto() }}</span></h3>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continuar Comprando</button>
+                    <button type="button" class="btn btn-success" ng-disabled="carrito.length === 0" ng-click="procesarPago()">
+                        💳 Proceder al Pago
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Un carrusel de Bootstrap que muestra promociones destacadas para diferentes categorías de productos, con imágenes atractivas y textos descriptivos. El carrusel incluye indicadores y controles para navegar entre las diapositivas.-->
     <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -110,6 +175,7 @@
                     <div class="card-img-container">
                         <img ng-src="{{prod.image}}" class="card-img-top" alt="{{prod.title}}">
                     </div>
+                    
                     <div class="card-body d-flex flex-column bg-dark">
                         <h6 class="card-title text-truncate-2 text-light mb-3" title="{{prod.title}}">{{prod.title}}</h6>
                         <div class="mt-auto">
@@ -202,6 +268,7 @@
             </div>
         </div>
     </div>
+
 
     <!--// Incorporación de los scripts necesarios para el funcionamiento de la aplicación, incluyendo Bootstrap para la interactividad de los componentes, AngularJS para la lógica de la aplicación y los archivos personalizados para servicios y controladores.-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

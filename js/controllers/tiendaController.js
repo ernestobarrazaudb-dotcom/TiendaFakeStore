@@ -2,21 +2,22 @@
 app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope, tiendaService) {
     $scope.productos = [];
     $scope.categorias = [];
-    $scope.carrito = [];
+    // Inicializar carrito desde localStorage (compatibilidad con distintas claves)
+    $scope.carrito = JSON.parse(localStorage.getItem('carrito')) || JSON.parse(localStorage.getItem('carrito_tienda')) || [];
     $scope.searchText = '';
     $scope.selectedCategory = '';
 
     // Función para filtrar productos por categoría
-    tiendaService.obtenerProductos().then(function (data) {
+    tiendaService.obtenerProductos().then(function(data) {
         $scope.productos = data;
-    }).catch(function (error) {
+    }).catch(function(error) {
         console.error("Error al cargar productos:", error);
     });
 
     // Función para cargar categorías
-    tiendaService.obtenerCategorias().then(function (data) {
+    tiendaService.obtenerCategorias().then(function(data) {
         $scope.categorias = data;
-    }).catch(function (error) {
+    }).catch(function(error) {
         console.error("Error al cargar categorías:", error);
     });
 
@@ -24,20 +25,21 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
     $scope.productoSeleccionado = null;
 
     // Abre el modal y carga la información del producto seleccionado
-    $scope.verDetalles = function (producto) {
+    $scope.verDetalles = function(producto) {
         $scope.productoSeleccionado = producto;
 
+        // Mostrar el modal de detalles usando Bootstrap 5
         var modal = new bootstrap.Modal(document.getElementById('modalDetalles'));
         modal.show();
     };
 
     // Agrega productos al carrito y controla si ya existen
-    $scope.agregarAlCarrito = function (producto) {
-        var productoExistente = $scope.carrito.find(function (item) {
+    $scope.agregarAlCarrito = function(producto) {
+        var productoExistente = $scope.carrito.find(function(item) {
             return item.id === producto.id;
         });
 
-        // Si el producto ya existe en el carrito, incrementa la cantidad
+        // Si el producto ya existe, incrementamos la cantidad, sino lo agregamos con cantidad 1
         if (productoExistente) {
             productoExistente.cantidad++;
         } else {
@@ -45,50 +47,103 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
             $scope.carrito.push(producto);
         }
 
-        // Cierra el modal después de agregar al carrito
+        // Guardar cambios en localStorage para persistencia
+        $scope.guardarEnLocalStorage();
+
+        // Feedback visual al usuario con SweetAlert2
         var modalElemento = document.getElementById('modalDetalles');
         var modal = bootstrap.Modal.getInstance(modalElemento);
 
-        // Si el modal está abierto, se cierra
+        // Cerrar el modal de detalles si está abierto
         if (modal) {
             modal.hide();
         }
     };
 
     // Calcula el subtotal de cada producto
-    $scope.calcularSubtotal = function (item) {
+    $scope.calcularSubtotal = function(item) {
         if (!item.cantidad || item.cantidad < 1) {
             item.cantidad = 1;
         }
 
-        // Retorna el subtotal formateado a dos decimales
         return (item.price * item.cantidad).toFixed(2);
     };
 
     // Calcula el total general del carrito
-    $scope.calcularTotal = function () {
+    $scope.calcularTotal = function() {
         var total = 0;
 
-        // Recorre cada producto en el carrito para calcular el total
-        $scope.carrito.forEach(function (item) {
+        // Sumar el subtotal de cada producto en el carrito
+        $scope.carrito.forEach(function(item) {
             if (!item.cantidad || item.cantidad < 1) {
                 item.cantidad = 1;
             }
-
+            // Sumar el precio por la cantidad al total general
             total += item.price * item.cantidad;
         });
-
+        // Devolver el total formateado a dos decimales
         return total.toFixed(2);
     };
-
-    // Función para contar el total de productos en el carrito
-    $scope.contarProductosCarrito = function () {
-        var total = 0;
-
-        $scope.carrito.forEach(function (item) {
-            total += item.cantidad;
-        });
-
-        return total;
+    // Nombre usado en la vista: mantener compatibilidad con index.html
+    $scope.obtenerTotalNeto = function() {
+        return $scope.calcularTotal();
     };
+
+    // Guardar carrito en localStorage (método utilizado en la vista)
+    $scope.guardarEnLocalStorage = function() {
+        localStorage.setItem('carrito', JSON.stringify($scope.carrito));
+        // también guardar con la clave alternativa si es usada por otros scripts
+        localStorage.setItem('carrito_tienda', JSON.stringify($scope.carrito));
+    };
+
+    // Eliminar producto por índice (mismo nombre que usa la vista)
+    $scope.eliminarProducto = function(index) {
+        $scope.carrito.splice(index, 1);
+        $scope.guardarEnLocalStorage();
+    };
+
+    // Procesar pago (mismo nombre que usa la vista)
+    $scope.procesarPago = function() {
+        if ($scope.carrito.length === 0) return;
+        // Confirmación estética con SweetAlert2
+        Swal.fire({
+            title: '¡Confirmación de Compra!',
+            text: `El monto total a pagar es de $${$scope.obtenerTotalNeto()} USD. ¿Deseas finalizar el pago?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#198754',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: 'Sí, pagar ahora',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $scope.$apply(function() {
+                    $scope.carrito = [];
+                    localStorage.removeItem('carrito');
+                    localStorage.removeItem('carrito_tienda');
+                });
+
+                // Cerrar el modal de carrito si está abierto
+                const modalElement = document.getElementById('modalCarrito');
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) modal.hide();
+
+                // Alerta final de éxito
+                Swal.fire('¡Pago Exitoso!', 'Tu orden ha sido procesada correctamente. ¡Gracias por tu compra!', 'success');
+            }
+        });
+    };
+
+    // Contar la cantidad total de productos en el carrito
+    $scope.contarProductosCarrito = function() {
+    var total = 0;
+
+    // Sumar la cantidad de cada producto en el carrito
+    $scope.carrito.forEach(function(item) {
+        total += item.cantidad;
+    });
+
+    return total;
+};
 }]);
+
