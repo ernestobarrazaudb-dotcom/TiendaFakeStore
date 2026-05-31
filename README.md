@@ -8,13 +8,6 @@
 
 Aplicación front-end de ejemplo que consume la API FakeStore y permite navegar productos, filtrarlos, ver detalles y gestionar un carrito de compras.
 
-Tecnologías
-- AngularJS 1.8.x
-- Bootstrap 5
-- Bootstrap Icons
-- SweetAlert2 (notificaciones)
-- Vanilla JavaScript para lógica de UI y persistencia (localStorage)
-
 Estructura principal
 - index.html                -> Interfaz y bindings AngularJS
 - js/app.js                 -> Inicialización del módulo Angular
