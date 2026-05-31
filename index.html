@@ -41,7 +41,7 @@
             🛒 Carrito <span class="badge bg-danger">{{ obtenerTotalNeto() }} USD</span>
         </button>
     </div>
-
+    <!-- Modal del carrito de compras, que se muestra cuando el usuario hace clic en el botón del carrito en la barra de navegación. El modal presenta una tabla con los productos añadidos al carrito, mostrando su nombre, precio unitario, cantidad y subtotal. También incluye un botón para eliminar productos del carrito y un resumen del total neto de la compra. El modal tiene opciones para continuar comprando o proceder al pago.-->
     <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -50,11 +50,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                    <!-- Si el carrito está vacío, se muestra un mensaje de advertencia para informar al usuario que no hay productos añadidos. El mensaje utiliza la clase "alert-warning" de Bootstrap para resaltar la información y atraer la atención del usuario. La directiva "ng-if" se utiliza para controlar la visibilidad del mensaje, mostrando el mensaje solo cuando el carrito no contiene productos. Esto mejora la experiencia del usuario al proporcionar retroalimentación clara sobre el estado de su carrito de compras.-->
                     <div class="alert alert-warning" ng-if="carrito.length === 0">
                         Tu carrito está vacío. ¡Agrega algunos productos!
                     </div>
-
+                    <!-- Si el carrito contiene productos, se muestra una tabla con los detalles de cada producto añadido, incluyendo su nombre, precio unitario, cantidad y subtotal. La tabla utiliza la clase "table-striped" para mejorar la legibilidad de los datos, y la directiva "ng-if" para mostrar la tabla solo cuando hay productos en el carrito. Esto permite a los usuarios revisar fácilmente los productos que han añadido a su carrito antes de proceder al pago.-->
                     <table class="table table-striped align-middle" ng-if="carrito.length > 0">
                         <thead>
                             <tr>
@@ -65,16 +65,20 @@
                                 <th>Acción</th>
                             </tr>
                         </thead>
+                        <!-- El cuerpo de la tabla se genera dinámicamente utilizando la directiva "ng-repeat" para iterar sobre los productos añadidos al carrito. Cada fila muestra el nombre del producto, su precio unitario formateado a dos decimales, un campo de entrada para ajustar la cantidad (con un mínimo de 1), el subtotal calculado multiplicando el precio por la cantidad, y un botón para eliminar el producto del carrito. El botón de eliminar utiliza la función "eliminarProducto" con el índice del producto para gestionar la eliminación de manera eficiente. Esta estructura permite a los usuarios revisar y modificar fácilmente los productos en su carrito antes de finalizar su compra.-->
                         <tbody>
                             <tr ng-repeat="item in carrito">
                                 <td>{{ item.title }}</td>
                                 <td>${{ item.price.toFixed(2) }}</td>
                                 <td>
+                                    <!-- El campo de entrada para la cantidad permite a los usuarios ajustar la cantidad de cada producto en el carrito. La directiva "ng-model" vincula el valor del campo de entrada a la propiedad "cantidad" del producto, y la función "ng-change" se utiliza para guardar los cambios en el almacenamiento local cada vez que se modifica la cantidad. El atributo "min" asegura que la cantidad no pueda ser menor a 1, evitando así cantidades inválidas. El estilo aplicado al campo de entrada centra el texto y ajusta su ancho para mejorar la apariencia y usabilidad dentro de la tabla.-->
                                     <input type="number" class="form-control form-control-sm text-center"
                                            ng-model="item.cantidad" ng-change="guardarEnLocalStorage()" min="1" style="width: 70px;">
                                 </td>
+                                <!-- El subtotal se calcula multiplicando el precio unitario por la cantidad, y se formatea a dos decimales para mejorar la presentación de la información. Esto permite a los usuarios ver claramente el costo total de cada producto en función de la cantidad seleccionada, facilitando la revisión de su carrito antes de proceder al pago.-->
                                 <td>${{ (item.price * item.cantidad).toFixed(2) }}</td>
                                 <td>
+                                    <!-- El botón de eliminar permite a los usuarios eliminar productos específicos de su carrito. Al hacer clic en el botón, se llama a la función "eliminarProducto" con el índice del producto en el carrito, lo que facilita la gestión de los productos añadidos. El botón utiliza un estilo de peligro para resaltar la acción de eliminación, y un icono de basura para mejorar la comprensión visual de su función. Esta funcionalidad es esencial para brindar a los usuarios control total sobre su carrito de compras, permitiéndoles ajustar su selección antes de finalizar su compra.-->
                                     <button class="btn btn-danger btn-sm" ng-click="eliminarProducto($index)">
                                         🗑️ Eliminar
                                     </button>
@@ -82,12 +86,13 @@
                             </tr>
                         </tbody>
                     </table>
-
+                    <!-- Si el carrito contiene productos, se muestra un resumen del total neto de la compra, calculado utilizando la función "obtenerTotalNeto". El total se muestra en un tamaño de fuente más grande y con un color verde para resaltar la información importante. La directiva "ng-if" asegura que el resumen solo se muestre cuando hay productos en el carrito, proporcionando una experiencia de usuario clara y enfocada en la revisión de su compra antes de proceder al pago.-->
                     <div class="text-end mt-3" ng-if="carrito.length > 0">
                         <h3>Total Neto: <span class="text-success">${{ obtenerTotalNeto() }}</span></h3>
                     </div>
 
                 </div>
+                <!-- El pie del modal incluye dos botones: uno para continuar comprando, que cierra el modal, y otro para proceder al pago, que llama a la función "procesarPago". El botón de proceder al pago está deshabilitado si el carrito está vacío, utilizando la directiva "ng-disabled" para controlar su estado. Esto asegura que los usuarios solo puedan avanzar al proceso de pago cuando hayan añadido productos a su carrito, mejorando la experiencia de usuario y evitando errores en el proceso de compra.-->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continuar Comprando</button>
                     <button type="button" class="btn btn-success" ng-disabled="carrito.length === 0" ng-click="procesarPago()">
