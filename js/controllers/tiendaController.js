@@ -1,4 +1,5 @@
 // Controlador para la tienda
+// Maneja todos los aspectos relacionados con la visualización de productos, categorías, gestión del carrito y procesamiento de pagos
 app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope, tiendaService) {
     $scope.productos = [];
     $scope.categorias = [];
@@ -58,6 +59,16 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
         if (modal) {
             modal.hide();
         }
+
+        // Notificación de éxito al usuario
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: producto.title + ' añadido al carrito',
+            showConfirmButton: false,
+            timer: 2500
+        });
     };
 
     // Calcula el subtotal de cada producto
@@ -98,8 +109,35 @@ app.controller('TiendaController', ['$scope', 'tiendaService', function ($scope,
 
     // Eliminar producto por índice (mismo nombre que usa la vista)
     $scope.eliminarProducto = function(index) {
-        $scope.carrito.splice(index, 1);
-        $scope.guardarEnLocalStorage();
+        var item = $scope.carrito[index];
+        // Confirmación estética con SweetAlert2 antes de eliminar
+        Swal.fire({
+            title: '¿Eliminar producto?',
+            text: `¿Deseas eliminar "${item ? item.title : 'este producto'}" del carrito?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#198754',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                // Eliminar el producto del carrito y actualizar localStorage
+                $scope.$apply(function() {
+                    $scope.carrito.splice(index, 1);
+                    $scope.guardarEnLocalStorage();
+                });
+                // Notificación de eliminación exitosa
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Producto eliminado',
+                    showConfirmButton: false,
+                    timer: 1400
+                });
+            }
+        });
     };
 
     // Procesar pago (mismo nombre que usa la vista)
