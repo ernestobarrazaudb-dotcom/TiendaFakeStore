@@ -127,11 +127,87 @@
         </div>
     </div>
 
-        <!--// Incorporación de los scripts necesarios para el funcionamiento de la aplicación, incluyendo Bootstrap para la interactividad de los componentes, AngularJS para la lógica de la aplicación y los archivos personalizados para servicios y controladores.-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-        <script src="js/app.js"></script>
-        <script src="js/services/tiendaservice.js"></script>
-        <script src="js/controllers/tiendaController.js"></script>
-    </body>
-    </html>
+
+    <!-- Modal de detalles -->
+    <!-- Este modal se muestra cuando el usuario hace clic en "Ver Detalles" de un producto. Muestra información detallada del producto seleccionado, incluyendo una imagen más grande, categoría, precio y descripción.-->
+    <!-- También incluye botones para cancelar o agregar el producto al carrito directamente desde el modal.-->
+    <div class="modal fade" id="modalDetalles" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-light">
+
+                <!-- Encabezado del modal que muestra el título del producto seleccionado y un botón para cerrar el modal. El título se muestra en un tamaño de fuente más grande para destacar la información.-->
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {{productoSeleccionado.title}}
+                    </h5>
+
+                    <!-- Botón para cerrar el modal, con un estilo que se adapta al tema oscuro de la aplicación. El botón utiliza la clase "btn-close-white" para asegurar que el icono de cierre sea visible en el fondo oscuro.-->
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+                    </button>
+                </div>
+
+                <!-- Cuerpo del modal que muestra una imagen más grande del producto, junto con su categoría, precio y descripción. La información se organiza en una fila con dos columnas: la primera para la imagen y la segunda para los detalles del producto. El diseño es responsivo para adaptarse a diferentes tamaños de pantalla.-->
+                <div class="modal-body">
+                    <div class="row">
+
+                        <!-- Columna para la imagen del producto, centrada y con un tamaño máximo para asegurar que se vea bien sin desbordar el modal. La imagen se adapta al tamaño del contenedor gracias a la clase "img-fluid".-->
+                        <div class="col-md-5 text-center">
+                            <img ng-src="{{productoSeleccionado.image}}"
+                                 class="img-fluid"
+                                 style="max-height:300px;">
+                        </div>
+
+                        <!-- Columna para los detalles del producto, con un espacio adecuado entre la imagen y el texto. Se muestra la categoría, precio y descripción del producto de manera clara y legible. El precio se destaca con un estilo de fuente más grande y un color diferente para resaltar la información importante.-->
+                        <div class="col-md-7">
+
+                            <!-- Información detallada del producto, organizada en párrafos para mejorar la legibilidad. La categoría y el precio se muestran con etiquetas en negrita para destacar la información clave, mientras que la descripción se presenta en un formato de texto normal para facilitar la lectura.-->
+                            <p>
+                                <strong>Categoría:</strong>
+                                {{productoSeleccionado.category}}
+                            </p>
+
+                            <!-- El precio se muestra con un formato numérico que incluye dos decimales, utilizando el filtro "number" de AngularJS para mejorar la presentación de la información. El precio se resalta con un estilo de fuente más grande y un color verde para atraer la atención del usuario.-->
+                            <p>
+                                <strong>Precio:</strong>
+                                ${{productoSeleccionado.price}}
+                            </p>
+
+                            <!-- La descripción del producto se muestra en un párrafo separado para mejorar la legibilidad, permitiendo a los usuarios obtener una visión completa de las características y detalles del producto antes de tomar una decisión de compra. La descripción se presenta en un formato de texto normal para facilitar la lectura.-->
+                            <p>
+                                {{productoSeleccionado.description}}
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Pie del modal que incluye botones para cancelar o agregar el producto al carrito. El botón de cancelar cierra el modal, mientras que el botón de agregar al carrito llama a la función "agregarAlCarrito" con el producto seleccionado como argumento. Ambos botones tienen estilos que se adaptan al tema oscuro de la aplicación.-->
+                <div class="modal-footer">
+                    <!-- Botón para cancelar la acción y cerrar el modal, con un estilo secundario que se adapta al tema oscuro de la aplicación. El botón utiliza el atributo "data-bs-dismiss" para cerrar el modal de manera eficiente sin necesidad de escribir código adicional en AngularJS.-->
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <!-- Botón para agregar el producto al carrito, con un estilo de éxito que resalta la acción positiva de añadir un producto a la compra. El botón llama a la función "agregarAlCarrito" con el producto seleccionado como argumento, lo que permite a los usuarios añadir fácilmente el producto a su carrito de compras directamente desde el modal de detalles.-->
+                    <button class="btn btn-success"
+                            ng-click="agregarAlCarrito(productoSeleccionado)">
+                        Agregar al carrito
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--// Incorporación de los scripts necesarios para el funcionamiento de la aplicación, incluyendo Bootstrap para la interactividad de los componentes, AngularJS para la lógica de la aplicación y los archivos personalizados para servicios y controladores.-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/services/tiendaservice.js"></script>
+    <script src="js/controllers/tiendaController.js"></script>
+</body>
+</html>
