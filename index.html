@@ -9,6 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/app.js"></script>
+    <script src="js/services/tiendaservice.js"></script>
+    <script src="js/controllers/tiendaController.js"></script>
     <link rel="stylesheet" href="css/styles.css">
 
 </head>
@@ -42,11 +45,11 @@
                 🛒 Carrito
                 <span class="badge bg-danger ms-2" ng-show="totalProductosCount > 0">{{ totalProductosCount }}</span>
             </span>
-            <span class="badge bg-danger">{{ obtenerTotalNeto() }} USD</span>
+            <span class="badge bg-success">{{ obtenerTotalNeto() }} USD</span>
         </button>
     </div>
     <!-- Modal del carrito de compras, que se muestra cuando el usuario hace clic en el botón del carrito en la barra de navegación. El modal presenta una tabla con los productos añadidos al carrito, mostrando su nombre, precio unitario, cantidad y subtotal. También incluye un botón para eliminar productos del carrito y un resumen del total neto de la compra. El modal tiene opciones para continuar comprando o proceder al pago.-->
-    <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true">
+    <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
